@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+/* Design System: Technical Blueprint v1.3 - CSS Variables */
+@theme {
+  /* Surface (Cool Greys) */
+  --color-surface-canvas: #E8E9ED;
+  --color-surface-card: #FFFFFF;
+  --color-surface-subtle: #F5F6F8;
+
+  /* Ink (Text) */
+  --color-ink-primary: #0F1115;
+  --color-ink-secondary: #585C65;
+  --color-ink-tertiary: #9AA0A6;
+  --color-ink-on-accent: #FFFFFF;
+
+  /* Accent (Violet) */
+  --color-accent-main: #3A2E6F;
+  --color-accent-hover: #4D4085;
+  --color-accent-subtle: #EBE9F5;
+
+  /* Functional Signals */
+  --color-signal-error: #B3261E;
+  --color-signal-warning: #E6B000;
+  --color-signal-success: #006E50;
+
+  /* Borders */
+  --color-border-grid: #C4C6CD;
+  --color-border-element: #E0E2E6;
+  --color-border-accent: #3A2E6F;
+
+  /* Typography Stack */
+  --font-sans: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
+
+  /* Border radius */
+  --radius-pill: 999px;
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-surface-canvas);
+    color: var(--color-ink-primary);
+    min-height: 100vh;
+  }
+
+  /* Focus styles */
+  *:focus-visible {
+    outline: 2px solid var(--color-accent-main);
+    outline-offset: 2px;
+  }
+
+  em, i {
+    font-style: normal;
+    color: var(--color-accent-main);
+  }
+}
+
+/* Design System Utility Classes */
+@layer utilities {
+  /* Backgrounds */
+  .bg-surface-canvas { background-color: var(--color-surface-canvas); }
+  .bg-surface-card { background-color: var(--color-surface-card); }
+  .bg-surface-subtle { background-color: var(--color-surface-subtle); }
+  .bg-accent-main { background-color: var(--color-accent-main); }
+  .bg-accent-hover { background-color: var(--color-accent-hover); }
+  .bg-accent-subtle { background-color: var(--color-accent-subtle); }
+  .bg-signal-error { background-color: var(--color-signal-error); }
+  .bg-signal-warning { background-color: var(--color-signal-warning); }
+  .bg-signal-success { background-color: var(--color-signal-success); }
+
+  /* Text colors */
+  .text-ink-primary { color: var(--color-ink-primary); }
+  .text-ink-secondary { color: var(--color-ink-secondary); }
+  .text-ink-tertiary { color: var(--color-ink-tertiary); }
+  .text-ink-on-accent { color: var(--color-ink-on-accent); }
+  .text-accent-main { color: var(--color-accent-main); }
+  .text-signal-error { color: var(--color-signal-error); }
+  .text-signal-warning { color: var(--color-signal-warning); }
+  .text-signal-success { color: var(--color-signal-success); }
+
+  /* Border colors */
+  .border-border-grid { border-color: var(--color-border-grid); }
+  .border-border-element { border-color: var(--color-border-element); }
+  .border-accent-main { border-color: var(--color-accent-main); }
+  .border-signal-error { border-color: var(--color-signal-error); }
+  .border-signal-warning { border-color: var(--color-signal-warning); }
+  .border-signal-success { border-color: var(--color-signal-success); }
+
+  /* Border radius */
+  .rounded-pill { border-radius: 999px; }
+
+  /* Typography */
+  .text-display-xl {
+    font-size: 48px;
+    line-height: 1.0;
+    letter-spacing: -0.025em;
+  }
+  .text-h1 {
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .text-h2 {
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+  }
+  .text-body {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .text-label {
+    font-size: 11px;
+    line-height: 1.0;
+    letter-spacing: 0.06em;
+  }
+  .text-data {
+    font-size: 13px;
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Opacity variants using CSS */
+.bg-signal-error\/10 { background-color: color-mix(in srgb, var(--color-signal-error) 10%, transparent); }
+.bg-signal-warning\/10 { background-color: color-mix(in srgb, var(--color-signal-warning) 10%, transparent); }
+.bg-signal-success\/10 { background-color: color-mix(in srgb, var(--color-signal-success) 10%, transparent); }
+.bg-accent-subtle\/50 { background-color: color-mix(in srgb, var(--color-accent-subtle) 50%, transparent); }
+.bg-surface-card\/80 { background-color: color-mix(in srgb, var(--color-surface-card) 80%, transparent); }
+.text-ink-on-accent\/70 { color: color-mix(in srgb, var(--color-ink-on-accent) 70%, transparent); }
+
+/* Hover state classes - applied directly in elements */
+.hover-bg-accent-hover:hover { background-color: var(--color-accent-hover); }
+.hover-bg-surface-subtle:hover { background-color: var(--color-surface-subtle); }
+.hover-border-accent-main:hover { border-color: var(--color-accent-main); }
+.hover-text-accent-main:hover { color: var(--color-accent-main); }
+
+/* Focus states */
+.focus-border-accent-main:focus { border-color: var(--color-accent-main); }
+
+/* Grid cell with crosshair artifact */
+@layer components {
+  .grid-cell {
+    position: relative;
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-border-grid);
+  }
+
+  .grid-cell::after {
+    content: "+";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    color: var(--color-accent-main);
+    font-family: monospace;
+    font-size: 14px;
+    z-index: 10;
+    background: transparent;
+    line-height: 1;
+  }
+
+  .grid-cell:first-child::after {
+    display: none;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-subtle);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-grid);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-tertiary);
+}
+
+/* RainbowKit overrides */
+[data-rk] {
+  --rk-colors-accentColor: var(--color-accent-main) !important;
+  --rk-colors-accentColorForeground: var(--color-ink-on-accent) !important;
+  --rk-radii-actionButton: 999px !important;
+  --rk-radii-connectButton: 999px !important;
+  --rk-radii-modal: 0px !important;
+  --rk-radii-modalMobile: 0px !important;
+}
