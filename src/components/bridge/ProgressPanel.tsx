@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Check, Loader2, Clock, Shield, Flame, Coins, ArrowRight, ExternalLink, Timer } from 'lucide-react'
+import { ChainIcon } from '@/components/ui'
 import { useBridgeContext, getElapsedTime, type EnhancedTransferStep } from '@/context/BridgeContext'
 import { chainMeta, USDC_ICON } from '@/lib/chains'
 import { getEstimatedFinality } from '@/lib/cctp-api'
@@ -29,36 +30,6 @@ const STEP_CONFIG = {
     description: 'Receive USDC on destination',
     icon: Coins,
   },
-}
-
-// Chain icon component
-function ChainIcon({ chainId, size = 20 }: { chainId: number; size?: number }) {
-  const meta = chainMeta[chainId]
-  if (!meta?.icon) {
-    return (
-      <div
-        className="rounded-full flex items-center justify-center text-white font-medium"
-        style={{ 
-          width: size, 
-          height: size, 
-          backgroundColor: meta?.color || '#627EEA',
-          fontSize: size * 0.4,
-        }}
-      >
-        {meta?.shortName?.slice(0, 2) || '??'}
-      </div>
-    )
-  }
-  return (
-    <img
-      src={meta.icon}
-      alt={meta.name}
-      width={size}
-      height={size}
-      className="rounded-full shrink-0"
-      style={{ width: size, height: size }}
-    />
-  )
 }
 
 // Elapsed time display with auto-update
@@ -135,7 +106,7 @@ export function ProgressPanel() {
       <div className="absolute -bottom-[5px] -right-[5px] text-accent-main font-mono text-sm">+</div>
       
       {/* Header */}
-      <div className="px-5 py-4 border-b border-border-element flex items-center justify-between">
+      <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-border-element flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Clock size={16} className="text-ink-tertiary" />
           <span className="text-h2 text-ink-primary">Progress</span>
@@ -145,7 +116,7 @@ export function ProgressPanel() {
       
       {/* Transfer Summary (when chains are selected) */}
       {showTransferSummary && (
-        <div className="px-5 py-4 border-b border-border-element">
+        <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-border-element">
           <div className="flex items-center justify-center gap-3">
             <div className="flex items-center gap-2">
               <ChainIcon chainId={sourceChainId} size={24} />
@@ -179,7 +150,7 @@ export function ProgressPanel() {
       )}
       
       {/* Steps */}
-      <div className="p-5 space-y-0">
+      <div className="p-4 sm:p-5 space-y-0">
         {steps.map((step, index) => {
           const config = STEP_CONFIG[step.name as keyof typeof STEP_CONFIG]
           if (!config) return null
@@ -270,7 +241,7 @@ export function ProgressPanel() {
       
       {/* Status message for attestation */}
       {currentStep === 'fetchAttestation' && state === 'bridging' && (
-        <div className="px-5 pb-5">
+        <div className="px-4 sm:px-5 pb-4 sm:pb-5">
           <div className="p-3 bg-accent-subtle border border-accent-main text-body text-ink-secondary">
             <div className="flex items-center justify-between mb-1">
               <span className="font-medium">Waiting for attestation...</span>
@@ -287,7 +258,7 @@ export function ProgressPanel() {
       
       {/* Success state */}
       {state === 'success' && (
-        <div className="px-5 pb-5">
+        <div className="px-4 sm:px-5 pb-4 sm:pb-5">
           <div className="p-3 bg-signal-success/10 border border-signal-success text-body text-signal-success">
             <div className="flex items-center justify-center gap-2">
               <Check size={18} />
@@ -304,7 +275,7 @@ export function ProgressPanel() {
       
       {/* Error state */}
       {state === 'error' && (
-        <div className="px-5 pb-5">
+        <div className="px-4 sm:px-5 pb-4 sm:pb-5">
           <div className="p-3 bg-signal-error/10 border border-signal-error text-body text-signal-error text-center">
             Transfer failed. Please try again.
           </div>

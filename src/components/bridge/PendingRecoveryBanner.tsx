@@ -1,37 +1,9 @@
 import { AlertTriangle, ArrowRight, RefreshCw, X, Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import { ChainIcon } from '@/components/ui'
 import { useBridgeContext, type PersistedTransfer } from '@/context/BridgeContext'
 import { chainMeta, USDC_ICON } from '@/lib/chains'
 import { getElapsedTime } from '@/lib/storage'
-
-function ChainIcon({ chainId, size = 16 }: { chainId: number; size?: number }) {
-  const meta = chainMeta[chainId]
-  if (!meta?.icon) {
-    return (
-      <div
-        className="rounded-full flex items-center justify-center text-white font-medium"
-        style={{ 
-          width: size, 
-          height: size, 
-          backgroundColor: meta?.color || '#627EEA',
-          fontSize: size * 0.4,
-        }}
-      >
-        {meta?.shortName?.slice(0, 2) || '??'}
-      </div>
-    )
-  }
-  return (
-    <img
-      src={meta.icon}
-      alt={meta.name}
-      width={size}
-      height={size}
-      className="rounded-full shrink-0"
-      style={{ width: size, height: size }}
-    />
-  )
-}
 
 interface PendingTransferCardProps {
   transfer: PersistedTransfer

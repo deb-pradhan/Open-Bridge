@@ -40,10 +40,10 @@ export function ConnectButton() {
                 return (
                   <button
                     onClick={openConnectModal}
-                    className="flex items-center gap-2 px-6 py-3 bg-accent-main text-ink-on-accent rounded-pill font-medium text-body hover:bg-accent-hover transition-colors"
+                    className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 bg-accent-main text-ink-on-accent rounded-pill font-medium text-body hover:bg-accent-hover transition-colors"
                   >
-                    <Wallet size={18} />
-                    <span>Connect Wallet</span>
+                    <Wallet size={16} className="sm:w-[18px] sm:h-[18px]" />
+                    <span className="text-sm sm:text-base">Connect<span className="hidden sm:inline"> Wallet</span></span>
                   </button>
                 )
               }

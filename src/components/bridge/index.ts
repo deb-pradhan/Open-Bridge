@@ -1,8 +1,5 @@
 export { BridgeForm } from './BridgeForm'
 export { ChainSelector } from './ChainSelector'
-export { BridgeAmountInput } from './AmountInput'
-export { FeeEstimate } from './FeeEstimate'
-export { TransferProgress } from './TransferProgress'
 export { ProgressPanel } from './ProgressPanel'
 export { RecentTransactions } from './RecentTransactions'
 export { PendingRecoveryBanner } from './PendingRecoveryBanner'

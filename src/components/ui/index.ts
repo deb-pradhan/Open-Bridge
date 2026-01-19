@@ -1,5 +1,6 @@
 export { Button, type ButtonProps } from './Button'
 export { Card, CardSection, type CardProps, type CardSectionProps } from './Card'
+export { ChainIcon } from './ChainIcon'
 export { Input, AmountInput, type InputProps, type AmountInputProps } from './Input'
 export { Select, type SelectProps, type SelectOption } from './Select'
 export { Skeleton, SkeletonText, SkeletonCard } from './Skeleton'

@@ -8,6 +8,7 @@ import { BridgeForm } from '@/components/bridge'
 import { ProgressPanel } from '@/components/bridge/ProgressPanel'
 import { RecentTransactions } from '@/components/bridge/RecentTransactions'
 import { PendingRecoveryBanner } from '@/components/bridge/PendingRecoveryBanner'
+import { WhyCCTP } from '@/components/bridge/WhyCCTP'
 import { ArrowUpRight } from 'lucide-react'
 import { BridgeProvider } from '@/context/BridgeContext'
 
@@ -36,47 +37,62 @@ function App() {
 
 function AppContent() {
   return (
-    <div className="min-h-screen bg-surface-canvas flex flex-col">
+    <div className="min-h-screen bg-surface-canvas flex flex-col overflow-x-hidden">
       {/* Header */}
       <header className="border-b border-border-grid bg-surface-card">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="Open Bridge" className="h-8 w-auto" />
-              <span className="text-h1 font-normal text-ink-primary tracking-tight">OpenBridge</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <img src="/logo.png" alt="Open Bridge" className="h-6 sm:h-8 w-auto shrink-0" />
+              <span className="text-lg sm:text-h1 font-normal text-ink-primary tracking-tight truncate">OpenBridge</span>
             </div>
-            <span className="px-2 py-1 text-label uppercase tracking-wider text-ink-tertiary border border-border-element bg-surface-subtle">
+            <span className="hidden sm:inline-block px-2 py-1 text-label uppercase tracking-wider text-ink-tertiary border border-border-element bg-surface-subtle shrink-0">
               CCTP V2
             </span>
           </div>
-          <ConnectButton />
+          <div className="shrink-0">
+            <ConnectButton />
+          </div>
         </div>
       </header>
 
-      {/* Main Content - Two Column Layout */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-8">
+      {/* Main Content */}
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-8">
         {/* Pending Recovery Banner */}
         <PendingRecoveryBanner />
         
-        <div className="flex flex-col lg:flex-row gap-6 items-start">
-          {/* Left Column - Bridge Form */}
-          <div className="flex-1 min-w-0 space-y-6">
+        {/* 
+          Mobile: Single column - BridgeForm, Progress, Recent, WhyCCTP
+          Desktop: Two columns - Left (BridgeForm, Recent, WhyCCTP), Right (Progress sticky)
+        */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4 sm:gap-6">
+          {/* Bridge Form */}
+          <div className="lg:col-start-1 lg:row-start-1">
             <BridgeForm />
+          </div>
+          
+          {/* Progress Panel - After BridgeForm on mobile, right column on desktop */}
+          <div className="lg:col-start-2 lg:row-start-1 lg:row-span-3 lg:sticky lg:top-8 lg:self-start">
+            <ProgressPanel />
+          </div>
+          
+          {/* Recent Transactions */}
+          <div className="lg:col-start-1 lg:row-start-2">
             <RecentTransactions />
           </div>
           
-          {/* Right Column - Progress Panel */}
-          <div className="w-full lg:w-[340px] lg:shrink-0 lg:sticky lg:top-8">
-            <ProgressPanel />
+          {/* Why CCTP */}
+          <div className="lg:col-start-1 lg:row-start-3">
+            <WhyCCTP />
           </div>
         </div>
       </main>
 
       {/* Footer */}
       <footer className="border-t border-border-grid bg-surface-card mt-auto">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-label text-ink-tertiary">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+            <div className="text-label text-ink-tertiary text-center sm:text-left">
               Powered by{' '}
               <a
                 href="https://developers.circle.com/bridge-kit"
@@ -86,9 +102,9 @@ function AppContent() {
               >
                 Circle Bridge Kit
               </a>{' '}
-              and CCTP V2
+              & CCTP
             </div>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               <FooterLink href="https://developers.circle.com" label="Docs" />
               <FooterLink href="https://github.com" label="GitHub" />
             </div>

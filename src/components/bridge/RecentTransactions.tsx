@@ -1,36 +1,7 @@
 import { Clock, ArrowRight, ExternalLink, Check, X, Loader2, Zap } from 'lucide-react'
+import { ChainIcon } from '@/components/ui'
 import { useBridgeContext } from '@/context/BridgeContext'
 import { chainMeta, USDC_ICON, getExplorerTxUrl } from '@/lib/chains'
-
-// Chain icon component
-function ChainIcon({ chainId, size = 20 }: { chainId: number; size?: number }) {
-  const meta = chainMeta[chainId]
-  if (!meta?.icon) {
-    return (
-      <div
-        className="rounded-full flex items-center justify-center text-white font-medium"
-        style={{ 
-          width: size, 
-          height: size, 
-          backgroundColor: meta?.color || '#627EEA',
-          fontSize: size * 0.35,
-        }}
-      >
-        {meta?.shortName?.slice(0, 2) || '??'}
-      </div>
-    )
-  }
-  return (
-    <img
-      src={meta.icon}
-      alt={meta.name}
-      width={size}
-      height={size}
-      className="rounded-full shrink-0"
-      style={{ width: size, height: size }}
-    />
-  )
-}
 
 export function RecentTransactions() {
   const { transactions } = useBridgeContext()
@@ -41,12 +12,12 @@ export function RecentTransactions() {
         {/* Crosshair decoration */}
         <div className="absolute -top-[5px] -right-[5px] text-accent-main font-mono text-sm">+</div>
         
-        <div className="px-5 py-4 border-b border-border-element flex items-center gap-2">
+        <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-border-element flex items-center gap-2">
           <Clock size={16} className="text-ink-tertiary" />
           <span className="text-h2 text-ink-primary">Recent Transactions</span>
         </div>
         
-        <div className="p-8 text-center">
+        <div className="p-6 sm:p-8 text-center">
           <Clock size={24} className="mx-auto text-ink-tertiary mb-2" />
           <p className="text-body text-ink-tertiary">No transactions yet</p>
           <p className="text-label text-ink-tertiary mt-1">
@@ -62,7 +33,7 @@ export function RecentTransactions() {
       {/* Crosshair decoration */}
       <div className="absolute -top-[5px] -right-[5px] text-accent-main font-mono text-sm">+</div>
       
-      <div className="px-5 py-4 border-b border-border-element flex items-center gap-2">
+      <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-border-element flex items-center gap-2">
         <Clock size={16} className="text-ink-tertiary" />
         <span className="text-h2 text-ink-primary">Recent Transactions</span>
       </div>
@@ -77,7 +48,7 @@ export function RecentTransactions() {
             : null
           
           return (
-            <div key={tx.id} className="px-5 py-4 flex items-center justify-between">
+            <div key={tx.id} className="px-4 sm:px-5 py-3 sm:py-4 flex items-center justify-between gap-2">
               <div className="flex items-center gap-4">
                 {/* Status icon */}
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${

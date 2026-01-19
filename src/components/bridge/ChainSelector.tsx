@@ -1,6 +1,7 @@
 import { useMemo, useState, useRef, useEffect } from 'react'
 import { ChevronDown, Check, Loader2 } from 'lucide-react'
 import { clsx } from 'clsx'
+import { ChainIcon } from '@/components/ui'
 import { useChains, useMultiChainBalances } from '@/hooks/useChains'
 import { chainMeta, USDC_ICON } from '@/lib/chains'
 import { useAccount } from 'wagmi'
@@ -79,11 +80,7 @@ export function ChainSelector({
         {selectedChain && selectedMeta ? (
           <div className="flex items-center justify-between w-full gap-2">
             <div className="flex items-center gap-3">
-              <ChainIcon 
-                src={selectedMeta.icon} 
-                name={selectedMeta.name}
-                size={24}
-              />
+              <ChainIcon chainId={selectedChain.id} size={24} />
               <span className="text-ink-primary font-medium">{selectedMeta.name}</span>
             </div>
             {showBalance && isConnected && selectedBalance && (
@@ -135,11 +132,7 @@ export function ChainSelector({
                 )}
               >
                 <div className="flex items-center gap-3">
-                  <ChainIcon 
-                    src={meta?.icon} 
-                    name={meta?.name || chain.name}
-                    size={28}
-                  />
+                  <ChainIcon chainId={chain.id} size={28} />
                   <div className="flex flex-col">
                     <span className="text-body text-ink-primary">{meta?.name || chain.name}</span>
                     {showBalance && isConnected && chainBalance && (
@@ -171,36 +164,3 @@ export function ChainSelector({
   )
 }
 
-// Chain icon component with fallback
-function ChainIcon({ src, name, size = 24 }: { src?: string; name: string; size?: number }) {
-  const [error, setError] = useState(false)
-  
-  if (!src || error) {
-    // Fallback to colored initials
-    return (
-      <div
-        className="rounded-full flex items-center justify-center text-white font-medium shrink-0"
-        style={{ 
-          width: size, 
-          height: size, 
-          backgroundColor: '#627EEA',
-          fontSize: size * 0.4,
-        }}
-      >
-        {name.slice(0, 2).toUpperCase()}
-      </div>
-    )
-  }
-
-  return (
-    <img
-      src={src}
-      alt={name}
-      width={size}
-      height={size}
-      className="rounded-full shrink-0 object-contain"
-      onError={() => setError(true)}
-      style={{ width: size, height: size }}
-    />
-  )
-}

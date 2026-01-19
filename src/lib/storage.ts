@@ -103,15 +103,6 @@ export function getPendingTransfers(walletAddress: string): PersistedTransfer[] 
 }
 
 /**
- * Get completed transfers for a wallet
- */
-export function getCompletedTransfers(walletAddress: string): PersistedTransfer[] {
-  return getTransfers(walletAddress)
-    .filter(t => t.status !== 'pending')
-    .slice(0, 10) // Keep last 10
-}
-
-/**
  * Save or update a transfer
  */
 export function saveTransfer(transfer: PersistedTransfer): void {
@@ -149,61 +140,6 @@ export function updateTransfer(
 }
 
 /**
- * Update a step in a transfer
- */
-export function updateTransferStep(
-  transferId: string,
-  stepName: StepName,
-  stepUpdates: Partial<EnhancedTransferStep>
-): void {
-  const data = getStorageData()
-  const transfer = data.transfers.find(t => t.id === transferId)
-  
-  if (!transfer) return
-  
-  transfer.steps = transfer.steps.map(step => 
-    step.name === stepName ? { ...step, ...stepUpdates } : step
-  )
-  
-  saveTransfer(transfer)
-}
-
-/**
- * Mark a transfer as complete
- */
-export function completeTransfer(
-  id: string,
-  status: 'success' | 'failed',
-  mintTxHash?: string
-): void {
-  updateTransfer(id, {
-    status,
-    completedAt: Date.now(),
-    mintTxHash,
-  })
-}
-
-/**
- * Delete a transfer
- */
-export function deleteTransfer(id: string): void {
-  const data = getStorageData()
-  data.transfers = data.transfers.filter(t => t.id !== id)
-  saveStorageData(data)
-}
-
-/**
- * Clear all transfers for a wallet
- */
-export function clearTransfers(walletAddress: string): void {
-  const data = getStorageData()
-  data.transfers = data.transfers.filter(
-    t => t.walletAddress.toLowerCase() !== walletAddress.toLowerCase()
-  )
-  saveStorageData(data)
-}
-
-/**
  * Create initial step state
  */
 export function createInitialSteps(): EnhancedTransferStep[] {
@@ -237,23 +173,6 @@ export function canResumeTransfer(transfer: PersistedTransfer): boolean {
 }
 
 /**
- * Get the resumption point for a transfer
- */
-export function getResumptionPoint(transfer: PersistedTransfer): StepName | null {
-  if (!canResumeTransfer(transfer)) return null
-  
-  const attestationStep = transfer.steps.find(s => s.name === 'fetchAttestation')
-  
-  // If attestation already fetched, resume from mint
-  if (attestationStep?.state === 'success' && transfer.attestation) {
-    return 'mint'
-  }
-  
-  // Otherwise resume from attestation
-  return 'fetchAttestation'
-}
-
-/**
  * Calculate elapsed time for a step or transfer
  */
 export function getElapsedTime(startedAt: number, completedAt?: number): string {
@@ -276,13 +195,3 @@ export function getElapsedTime(startedAt: number, completedAt?: number): string 
   return `${hours}h ${remainingMins}m`
 }
 
-/**
- * Format timestamp for display
- */
-export function formatTimestamp(timestamp: number): string {
-  return new Date(timestamp).toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  })
-}

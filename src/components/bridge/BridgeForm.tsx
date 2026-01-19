@@ -75,7 +75,7 @@ function TransferSpeedToggle({
           </div>
           <div className="text-[11px] text-ink-tertiary">{fastFinality.label}</div>
           <div className="text-[11px] font-mono text-ink-secondary mt-1">
-            {fastFeeBps > 0 ? `~${fastFeeUsdc} USDC fee` : 'Free'}
+            ~{fastFeeUsdc} USDC + gas
           </div>
         </button>
         
@@ -96,8 +96,8 @@ function TransferSpeedToggle({
             </span>
           </div>
           <div className="text-[11px] text-ink-tertiary">{standardFinality.label}</div>
-          <div className="text-[11px] font-mono text-signal-success mt-1">
-            Free
+          <div className="text-[11px] font-mono text-ink-secondary mt-1">
+            Gas only
           </div>
         </button>
       </div>
@@ -214,30 +214,30 @@ export function BridgeForm() {
       <div className="absolute -top-[5px] -right-[5px] text-accent-main font-mono text-sm">+</div>
       
       {/* Header */}
-      <div className="px-5 py-4 border-b border-border-element flex items-center justify-between">
+      <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-border-element flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <UsdcIcon size={22} />
+          <UsdcIcon size={20} />
           <span className="text-h2 text-ink-primary">Bridge USDC</span>
         </div>
-        <span className="px-2.5 py-1 text-label uppercase tracking-wider text-accent-main border border-accent-main bg-accent-subtle flex items-center gap-1.5">
-          <UsdcIcon size={14} />
-          USDC Only
+        <span className="px-2 sm:px-2.5 py-1 text-label uppercase tracking-wider text-accent-main border border-accent-main bg-accent-subtle flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <UsdcIcon size={12} />
+          <span className="hidden xs:inline">USDC </span>Only
         </span>
       </div>
       
       {/* Chain Selectors - Horizontal Layout */}
-      <div className="p-5 border-b border-border-element">
+      <div className="p-4 sm:p-5 border-b border-border-element">
         {/* Labels Row */}
         <div className="flex items-center mb-2">
           <span className="flex-1 text-label uppercase tracking-wider text-ink-tertiary">FROM</span>
-          <span className="w-12" /> {/* Spacer for swap button */}
+          <span className="w-10 sm:w-12" /> {/* Spacer for swap button */}
           <span className="flex-1 text-label uppercase tracking-wider text-ink-tertiary">TO</span>
         </div>
         
         {/* Selectors Row */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* From Chain */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <ChainSelector
               label=""
               value={sourceChainId}
@@ -250,13 +250,13 @@ export function BridgeForm() {
           <button
             onClick={swapChains}
             disabled={!sourceChainId || !destChainId}
-            className="p-2.5 bg-surface-subtle border border-border-element hover:border-accent-main disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
+            className="p-2 sm:p-2.5 bg-surface-subtle border border-border-element hover:border-accent-main disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
           >
-            <ArrowLeftRight size={18} className="text-accent-main" />
+            <ArrowLeftRight size={16} className="sm:w-[18px] sm:h-[18px] text-accent-main" />
           </button>
           
           {/* To Chain */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <ChainSelector
               label=""
               value={destChainId}
@@ -268,8 +268,8 @@ export function BridgeForm() {
       </div>
       
       {/* Amount Input */}
-      <div className="p-5 border-b border-border-element">
-        <div className="flex items-center justify-between mb-2">
+      <div className="p-4 sm:p-5 border-b border-border-element">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
           <label className="text-label uppercase tracking-wider text-ink-tertiary">
             AMOUNT
           </label>
@@ -278,15 +278,15 @@ export function BridgeForm() {
               {balanceLoading ? (
                 <Loader2 size={12} className="animate-spin" />
               ) : (
-                <>
-                  <button
-                    onClick={handleMaxClick}
-                    disabled={!balance}
-                    className="text-accent-main hover:underline disabled:text-ink-tertiary disabled:no-underline font-mono"
-                  >
-                    {balance ? `${parseFloat(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })} USDC` : '—'}
-                  </button>
-                </>
+                <button
+                  onClick={handleMaxClick}
+                  disabled={!balance}
+                  className="text-accent-main hover:underline disabled:text-ink-tertiary disabled:no-underline font-mono flex items-center gap-1"
+                >
+                  <span className="hidden sm:inline">Balance: </span>
+                  {balance ? `${parseFloat(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}` : '—'}
+                  <span className="text-accent-main uppercase text-[10px]">MAX</span>
+                </button>
               )}
             </div>
           ) : (
@@ -296,9 +296,10 @@ export function BridgeForm() {
           )}
         </div>
         
-        <div className="flex items-center gap-3 bg-surface-subtle border border-border-element p-3">
+        <div className="flex items-center gap-2 sm:gap-3 bg-surface-subtle border border-border-element p-2.5 sm:p-3">
           <input
             type="text"
+            inputMode="decimal"
             value={amount}
             onChange={(e) => {
               const value = e.target.value.replace(/[^0-9.]/g, '')
@@ -307,17 +308,17 @@ export function BridgeForm() {
               }
             }}
             placeholder="0.00"
-            className="flex-1 bg-transparent text-h1 font-light text-ink-primary font-mono outline-none placeholder:text-ink-tertiary"
+            className="flex-1 min-w-0 bg-transparent text-xl sm:text-h1 font-light text-ink-primary font-mono outline-none placeholder:text-ink-tertiary"
           />
-          <div className="flex items-center gap-2 shrink-0">
-            <UsdcIcon size={20} />
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <UsdcIcon size={18} />
             <span className="text-body font-medium text-ink-secondary">USDC</span>
           </div>
         </div>
       </div>
       
       {/* Transfer Speed Selection */}
-      <div className="p-5 border-b border-border-element">
+      <div className="p-4 sm:p-5 border-b border-border-element">
         <TransferSpeedToggle
           value={transferSpeed}
           onChange={setTransferSpeed}
@@ -327,12 +328,12 @@ export function BridgeForm() {
       </div>
       
       {/* Fee Breakdown */}
-      <div className="p-5 border-b border-border-element space-y-3">
-        {/* CCTP Fee (Fast Transfer only) */}
+      <div className="p-4 sm:p-5 border-b border-border-element space-y-2 sm:space-y-3">
+        {/* CCTP Protocol Fee (Fast Transfer only) */}
         {transferSpeed === 'fast' && (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-label uppercase tracking-wider text-ink-tertiary">CCTP FEE</span>
+              <span className="text-label uppercase tracking-wider text-ink-tertiary">CCTP PROTOCOL FEE</span>
               <span className="px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-signal-success border border-signal-success bg-signal-success/10">
                 FAST
               </span>
@@ -343,11 +344,11 @@ export function BridgeForm() {
           </div>
         )}
         
-        {/* Standard = Free */}
+        {/* Standard = No protocol fee */}
         {transferSpeed === 'standard' && (
           <div className="flex items-center justify-between">
-            <span className="text-label uppercase tracking-wider text-ink-tertiary">CCTP FEE</span>
-            <span className="text-body font-mono text-signal-success">Free</span>
+            <span className="text-label uppercase tracking-wider text-ink-tertiary">CCTP PROTOCOL FEE</span>
+            <span className="text-body font-mono text-signal-success">$0</span>
           </div>
         )}
         
@@ -361,7 +362,7 @@ export function BridgeForm() {
                     GAS · {sourceMeta?.shortName || 'SRC'}
                   </span>
                   <span className="px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-ink-tertiary border border-border-element bg-surface-subtle">
-                    BURN
+                    APPROVE + BURN
                   </span>
                   {estimate.gasFees.source.gwei && (
                     <span className="px-1.5 py-0.5 text-[10px] font-mono text-ink-tertiary border border-border-element bg-surface-subtle">
@@ -440,7 +441,7 @@ export function BridgeForm() {
       </div>
       
       {/* Bridge Button */}
-      <div className="p-5">
+      <div className="p-4 sm:p-5">
         <Button
           onClick={handleBridge}
           disabled={isConnected && !canBridge}
