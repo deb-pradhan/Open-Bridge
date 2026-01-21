@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  
+  // Transaction details
+  sourceChainId Int
+  destChainId   Int
+  amount        String
+  amountUsd     Float?
+  
+  // Status
+  status        String   @default("pending") // pending, success, failed
+  transferSpeed String   @default("standard") // standard, fast
+  
+  // Wallet info (anonymized - just for counting unique users)
+  walletAddress String
+  
+  // Tx hashes
+  burnTxHash    String?
+  mintTxHash    String?
+  
+  // Timing
+  startedAt     DateTime
+  completedAt   DateTime?
+  durationMs    Int?
+
+  @@index([createdAt])
+  @@index([walletAddress])
+  @@index([status])
+  @@index([sourceChainId, destChainId])
+}
+
+model WalletConnection {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  walletAddress String
+  chainId       Int?
+  
+  @@index([createdAt])
+  @@index([walletAddress])
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  path      String
+  referrer  String?
+  userAgent String?
+  
+  @@index([createdAt])
+  @@index([path])
+}
+
+model DailyStats {
+  id              String   @id @default(cuid())
+  date            DateTime @unique @db.Date
+  
+  // Aggregated stats
+  totalTxCount    Int      @default(0)
+  successTxCount  Int      @default(0)
+  failedTxCount   Int      @default(0)
+  totalVolumeUsd  Float    @default(0)
+  uniqueWallets   Int      @default(0)
+  pageViews       Int      @default(0)
+  
+  @@index([date])
+}

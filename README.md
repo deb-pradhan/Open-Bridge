@@ -90,6 +90,37 @@ Using Alchemy ensures reliable RPC connections and prevents rate limiting on pub
 - Avalanche Fuji
 - Linea Sepolia
 
+## Analytics Dashboard
+
+The app includes a private analytics dashboard at `/analytics` to track:
+
+- **Transaction volume** and counts
+- **Unique wallets** connected
+- **Popular routes** (chain pairs)
+- **Success/failure rates**
+- **Page views**
+
+### Setup Analytics (for Railway)
+
+1. **Add PostgreSQL plugin** in your Railway project
+2. **Set environment variables**:
+   ```bash
+   # Railway will auto-inject DATABASE_URL
+   ANALYTICS_KEY=your-secure-random-key-here  # Access key for /analytics
+   VITE_API_URL=https://your-api-service.railway.app
+   ```
+3. Access dashboard at `https://your-app.railway.app/analytics`
+
+### Local Development with Analytics
+
+```bash
+# Start all services (frontend, API, Postgres)
+docker-compose up
+
+# Access analytics at http://localhost:3000/analytics
+# Default key: change-me-in-production
+```
+
 ## Architecture
 
 ```
@@ -103,8 +134,17 @@ src/
 │   ├── wagmi.ts      # Wallet configuration
 │   ├── chains.ts     # Chain definitions
 │   ├── bridge-kit.ts # Bridge Kit integration
+│   ├── analytics.ts  # Analytics tracking
 │   └── errors.ts     # Error handling
+├── pages/
+│   └── Analytics.tsx # Private analytics dashboard
 └── styles/           # CSS and design tokens
+
+server/               # Express API for analytics
+├── src/
+│   └── index.ts      # API routes
+└── prisma/
+    └── schema.prisma # Database schema
 ```
 
 ## How It Works
@@ -126,6 +166,49 @@ src/
 - **Bridge**: Circle Bridge Kit + CCTP V2
 - **Styling**: Tailwind CSS
 - **State**: React Context + TanStack Query
+
+## Railway Deployment
+
+### Option 1: Single Service (Frontend Only)
+
+If you don't need analytics, deploy just the frontend:
+
+1. Connect your GitHub repo to Railway
+2. Set build command: `npm run build`
+3. Set start command: `npx serve dist`
+4. Add environment variables:
+   - `VITE_WALLETCONNECT_PROJECT_ID`
+   - `VITE_ALCHEMY_API_KEY` (optional)
+
+### Option 2: Full Stack (Frontend + API + Analytics)
+
+For full analytics support:
+
+1. **Create 3 services in Railway:**
+   - **web** (frontend): Root directory `/`
+   - **api** (backend): Root directory `/server`
+   - **db** (postgres): Add PostgreSQL plugin
+
+2. **Configure web service:**
+   ```
+   Build: npm run build
+   Start: npx serve dist
+   Env: VITE_API_URL=${{api.RAILWAY_PUBLIC_DOMAIN}}
+   ```
+
+3. **Configure api service:**
+   ```
+   Build: npm run build
+   Start: npm start
+   Env: 
+     DATABASE_URL=${{db.DATABASE_URL}}
+     ANALYTICS_KEY=<generate-a-secure-key>
+   ```
+
+4. **Run database migrations:**
+   ```bash
+   railway run -s api npx prisma db push
+   ```
 
 ## Resources
 

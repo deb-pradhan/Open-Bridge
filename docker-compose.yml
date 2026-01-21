@@ -1,8 +1,48 @@
 services:
-  open-bridge:
+  # Frontend (Vite/React)
+  web:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "3000:80"
+    environment:
+      - VITE_API_URL=http://localhost:4000
     restart: unless-stopped
+
+  # Backend API (Express)
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/openbridge
+      - ANALYTICS_KEY=${ANALYTICS_KEY:-change-me-in-production}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=openbridge
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

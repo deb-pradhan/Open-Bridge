@@ -1,0 +1,11 @@
+# Railway configuration
+# This project has two services: web (frontend) and api (backend)
+
+[build]
+builder = "nixpacks"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3

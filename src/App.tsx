@@ -2,6 +2,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { config } from '@/lib/wagmi'
 import { ConnectButton } from '@/components/wallet/ConnectButton'
 import { BridgeForm } from '@/components/bridge'
@@ -11,27 +12,35 @@ import { PendingRecoveryBanner } from '@/components/bridge/PendingRecoveryBanner
 import { WhyCCTP } from '@/components/bridge/WhyCCTP'
 import { ArrowUpRight } from 'lucide-react'
 import { BridgeProvider } from '@/context/BridgeContext'
+import Analytics from '@/pages/Analytics'
 
 const queryClient = new QueryClient()
 
 function App() {
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
-          theme={darkTheme({
-            accentColor: '#3A2E6F',
-            accentColorForeground: 'white',
-            borderRadius: 'none',
-            fontStack: 'system',
-          })}
-        >
-          <BridgeProvider>
-            <AppContent />
-          </BridgeProvider>
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <BrowserRouter>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider
+            theme={darkTheme({
+              accentColor: '#3A2E6F',
+              accentColorForeground: 'white',
+              borderRadius: 'none',
+              fontStack: 'system',
+            })}
+          >
+            <Routes>
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="*" element={
+                <BridgeProvider>
+                  <AppContent />
+                </BridgeProvider>
+              } />
+            </Routes>
+          </RainbowKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </BrowserRouter>
   )
 }
 
@@ -90,23 +99,45 @@ function AppContent() {
 
       {/* Footer */}
       <footer className="border-t border-border-grid bg-surface-card mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-            <div className="text-label text-ink-tertiary text-center sm:text-left">
-              Powered by{' '}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+              <div className="text-label text-ink-tertiary text-center sm:text-left">
+                Powered by{' '}
+                <a
+                  href="https://developers.circle.com/bridge-kit"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent-main hover:underline"
+                >
+                  Circle Bridge Kit
+                </a>{' '}
+                & CCTP
+              </div>
+              <div className="flex items-center gap-4 sm:gap-6">
+                <FooterLink href="https://developers.circle.com/stablecoins/cctp-getting-started" label="CCTP Docs" />
+                <FooterLink href="https://github.com/deb-pradhan/Open-Bridge" label="GitHub" />
+              </div>
+            </div>
+            <div className="text-label text-ink-muted text-center">
+              Made by{' '}
               <a
-                href="https://developers.circle.com/bridge-kit"
+                href="https://x.com/WhatIsDeb"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent-main hover:underline"
+                className="text-ink-secondary hover:text-accent-main transition-colors"
               >
-                Circle Bridge Kit
+                Deb
               </a>{' '}
-              & CCTP
-            </div>
-            <div className="flex items-center gap-4 sm:gap-6">
-              <FooterLink href="https://developers.circle.com" label="Docs" />
-              <FooterLink href="https://github.com" label="GitHub" />
+              from{' '}
+              <a
+                href="https://x.com/jlabsdigital"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ink-secondary hover:text-accent-main transition-colors"
+              >
+                jlabs digital
+              </a>
             </div>
           </div>
         </div>

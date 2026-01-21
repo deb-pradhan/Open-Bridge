@@ -23,6 +23,12 @@ import {
   createInitialSteps,
   canResumeTransfer,
 } from '@/lib/storage'
+import {
+  trackTransaction,
+  updateTransaction as updateAnalyticsTransaction,
+  trackWalletConnection,
+  trackPageView,
+} from '@/lib/analytics'
 
 export type TransferState = 'idle' | 'estimating' | 'confirming' | 'bridging' | 'success' | 'error'
 
@@ -116,9 +122,18 @@ export function BridgeProvider({ children }: { children: ReactNode }) {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [pendingTransfers, setPendingTransfers] = useState<PersistedTransfer[]>([])
 
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView(window.location.pathname)
+  }, [])
+
   // Load transactions from storage on mount and wallet change
+  // Also track wallet connection for analytics
   useEffect(() => {
     if (address) {
+      // Track wallet connection for analytics
+      trackWalletConnection(address, sourceChainId ?? undefined)
+      
       const stored = getTransfers(address)
       const mapped: Transaction[] = stored.map(t => {
         // Prefer mintTxHash for completed transfers, burnTxHash for pending
@@ -141,7 +156,7 @@ export function BridgeProvider({ children }: { children: ReactNode }) {
       setTransactions([])
       setPendingTransfers([])
     }
-  }, [address])
+  }, [address, sourceChainId])
 
   // Fetch CCTP fees when chains change
   useEffect(() => {
@@ -299,6 +314,18 @@ export function BridgeProvider({ children }: { children: ReactNode }) {
     }
     saveTransfer(persistedTransfer)
 
+    // Track transaction for analytics (non-blocking)
+    const analyticsId = await trackTransaction({
+      sourceChainId,
+      destChainId,
+      amount,
+      amountUsd: parseFloat(amount), // USDC is 1:1 with USD
+      status: 'pending',
+      transferSpeed,
+      walletAddress: address,
+      startedAt: startTime,
+    })
+
     try {
       const adapter = await createAdapter()
       const kit = getBridgeKit()
@@ -366,13 +393,25 @@ export function BridgeProvider({ children }: { children: ReactNode }) {
 
       const typedResult = bridgeResult as unknown as TransferResult
       const mintTxHash = getMintTxHash(typedResult)
+      const completedAt = Date.now()
+      const durationMs = completedAt - startTime
       
       // Update persisted transfer
       updateTransfer(transferId, {
         status: typedResult.state === 'success' ? 'success' : 'failed',
-        completedAt: Date.now(),
+        completedAt,
         mintTxHash,
       })
+
+      // Update analytics (non-blocking)
+      if (analyticsId) {
+        updateAnalyticsTransaction(analyticsId, {
+          status: typedResult.state === 'success' ? 'success' : 'failed',
+          mintTxHash,
+          completedAt,
+          durationMs,
+        })
+      }
       
       refreshTransactions()
       
@@ -387,6 +426,16 @@ export function BridgeProvider({ children }: { children: ReactNode }) {
       setError(message)
       setState('error')
       updateTransfer(transferId, { status: 'failed' })
+      
+      // Update analytics on failure (non-blocking)
+      if (analyticsId) {
+        updateAnalyticsTransaction(analyticsId, {
+          status: 'failed',
+          completedAt: Date.now(),
+          durationMs: Date.now() - startTime,
+        })
+      }
+      
       refreshTransactions()
     }
   }, [walletClient, sourceChainId, destChainId, amount, address, createAdapter, transferSpeed, refreshTransactions])
