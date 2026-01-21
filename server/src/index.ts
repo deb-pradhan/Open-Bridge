@@ -7,7 +7,7 @@ const app = express()
 const PORT = process.env.PORT || 4000
 
 // Admin key for analytics dashboard access
-const ANALYTICS_KEY = process.env.ANALYTICS_KEY || 'admin'
+const ANALYTICS_KEY = (process.env.ANALYTICS_KEY || 'admin').trim()
 
 app.use(cors())
 app.use(express.json())
@@ -299,7 +299,10 @@ app.get('/api/analytics/transactions', requireAnalyticsAuth, async (req, res) =>
 // Verify analytics key (for frontend auth check)
 app.post('/api/analytics/verify', (req, res) => {
   const { key } = req.body
-  res.json({ valid: key === ANALYTICS_KEY })
+  const trimmedKey = (key || '').trim()
+  const isValid = trimmedKey === ANALYTICS_KEY
+  console.log(`Auth attempt: valid=${isValid}, keyLength=${trimmedKey.length}, expectedLength=${ANALYTICS_KEY.length}`)
+  res.json({ valid: isValid })
 })
 
 // Health check

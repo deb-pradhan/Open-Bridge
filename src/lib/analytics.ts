@@ -1,5 +1,9 @@
 // Analytics tracking utilities
-const API_URL = import.meta.env.VITE_API_URL || ''
+// In production, set VITE_API_URL to your API service URL
+// Falls back to same-origin /api for simpler deployments, or localhost for local dev
+const API_URL = import.meta.env.VITE_API_URL || (
+  import.meta.env.PROD ? '' : 'http://localhost:4000'
+)
 
 interface TrackTransactionData {
   sourceChainId: number
