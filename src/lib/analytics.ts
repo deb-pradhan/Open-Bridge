@@ -1,9 +1,6 @@
 // Analytics tracking utilities
-// In production, set VITE_API_URL to your API service URL
-// Falls back to same-origin /api for simpler deployments, or localhost for local dev
-const API_URL = import.meta.env.VITE_API_URL || (
-  import.meta.env.PROD ? '' : 'http://localhost:4000'
-)
+// Hardcoded API URL for Railway deployment
+const API_URL = 'https://server-production-a4f8.up.railway.app'
 
 interface TrackTransactionData {
   sourceChainId: number
